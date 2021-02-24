@@ -8,6 +8,11 @@
     
     <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan" output="screen">
         <remap from="cloud_in" to="/velodyne_points" />
+        
+        <param name="min_height" value="-0.4"/>
+        <param name="max_height" value="0.1"/>
+        <param name="range_max"  value="150"/>
+        <param name="angle_increment" value="0.005"/>
     </node>
 
     <node pkg="slam_toolbox" type="async_slam_toolbox_node" name="slam_toolbox" ns="slam_toolbox" output="screen">

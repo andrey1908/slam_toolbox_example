@@ -26,7 +26,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: LaserScan
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -202,7 +202,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /map
+      Topic: /slam_toolbox/map
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -264,7 +264,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 14.049280166625977
+      Distance: 15.735193252563477
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -272,17 +272,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 1.254930019378662
-        Y: 7.349794387817383
-        Z: 9.5367431640625e-06
+        X: -1.670938491821289
+        Y: -1.1325349807739258
+        Z: 6.67572021484375e-06
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6403981447219849
+      Pitch: 0.6503981351852417
       Target Frame: <Fixed Frame>
-      Yaw: 1.2503948211669922
+      Yaw: 3.250394344329834
     Saved: ~
 Window Geometry:
   Displays:

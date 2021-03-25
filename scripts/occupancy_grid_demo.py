@@ -82,7 +82,7 @@ def draw_pose(image, k, robot_pose, occ_grid_info):
     x = robot_pose.pose.position.x * k / occ_grid_info.resolution
     y = robot_pose.pose.position.y * k / occ_grid_info.resolution
     i = int(x)
-    j = int(image.shape[0] - y)
+    j = image.shape[0] - int(y) - 1
     angle = 2 * np.arccos(robot_pose.pose.orientation.w) * np.sign(robot_pose.pose.orientation.z)  # only for 3 DoF movements
     
     radius = 6
@@ -115,7 +115,7 @@ if __name__ == '__main__':
     tfBuffer = tf2_ros.Buffer()
     tfListener = tf2_ros.TransformListener(tfBuffer)
     bridge = CvBridge()
-    rospy.Subscriber('/grid_map', OccupancyGrid, process_occupancy_grid)
+    rospy.Subscriber('/slam_toolbox/map', OccupancyGrid, process_occupancy_grid)
     pub = rospy.Publisher('/occupancy_grid_demo', Image, queue_size=10)
     rospy.spin()
 

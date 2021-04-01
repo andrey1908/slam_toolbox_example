@@ -1,11 +1,6 @@
 <launch>
 
-    <!-- Static transform from left camera to LIDAR -->
-    <node pkg="tf2_ros" type="static_transform_publisher" name="zed_left_camera_optical_frame_to_velodyne"
-        args="5.214154202176700392e-02 -1.846812214940576902e-01 -4.561479952008089256e-02 -3.046857448372968236e+00 -1.631619169438448314e+00 -1.657808369943630566e+00 zed_left_camera_optical_frame velodyne"/>
-
-    <node pkg="slam_toolbox_example" type="openvslam_odom_to_base_link.py" name="openvslam_odom_to_base_link" output="screen"/>
-    
+    <!-- Node to convert PointCloud2 to LaserScan -->
     <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan" output="screen">
         <remap from="cloud_in" to="/velodyne_points" />
         
@@ -15,8 +10,39 @@
         <param name="angle_increment" value="0.005"/>
     </node>
 
-    <node pkg="slam_toolbox" type="async_slam_toolbox_node" name="slam_toolbox" ns="slam_toolbox" output="screen">
-        <rosparam command="load" file="$(find slam_toolbox_example)/config/config.yaml"/>
+    <!-- Arguments -->
+    
+    <!-- pub_lidar_tf - if to publish static transform from left camera to lidar -->
+    <arg name="pub_lidar_tf" default="false"/>
+    <node if="$(arg pub_lidar_tf)" pkg="tf2_ros" type="static_transform_publisher" name="zed_left_camera_optical_frame_to_velodyne_transform"
+        args="4.632155672047202216e-02 -1.327858803524132048e-01 -6.092748914769485769e-02 -2.109805266472031704e+00 -1.588226287078796428e+00 -2.618237322666464806e+00 zed_left_camera_optical_frame velodyne"/>
+    
+    <!-- openvslam_drift - OpenVSLAM odometry drift factor -->
+    <arg name="openvslam_drift" default="0"/> <!-- 0.005 -->
+    
+    <!-- openvslam - if openvslam odometry is used -->
+    <arg name="openvslam" default="true"/>
+    <!-- Custom node to convert OpenVSLAM odometry from camera frame to base_link -->
+    <node if="$(arg openvslam)" pkg="occupancy_grid_utils" type="transform_odometry.py" name="transfoem_odometry" output="screen"
+        args="--in-odom-topic /OpenVSLAM/odom \
+              --from-frame zed_left_camera_optical_frame \
+              --to-frame base_link \
+              --odom-frame odom \
+              --publish-odom-tf \
+              --drift-factor $(arg openvslam_drift)"/>
+    
+    <!-- local - localization mode, otherwise mapping mode -->
+    <arg name="local" default="false"/>
+
+    <!-- SLAM Toolbox in mapping mode -->
+    <node unless="$(arg local)" pkg="slam_toolbox" type="async_slam_toolbox_node" name="slam_toolbox" ns="slam_toolbox" output="screen">
+        <rosparam command="load" file="$(find slam_toolbox_example)/config/mapping.yaml"/>
+        <remap from="/map" to="map"/>
+    </node>
+    
+    <!-- SLAM Toolbox in localization mode -->
+    <node if="$(arg local)" pkg="slam_toolbox" type="localization_slam_toolbox_node" name="slam_toolbox" ns="slam_toolbox" output="screen">
+        <rosparam command="load" file="$(find slam_toolbox_example)/config/localization.yaml"/>
         <remap from="/map" to="map"/>
     </node>
 

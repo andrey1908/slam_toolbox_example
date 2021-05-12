@@ -23,7 +23,7 @@
     <!-- openvslam - if openvslam odometry is used -->
     <arg name="openvslam" default="true"/>
     <!-- Custom node to convert OpenVSLAM odometry from camera frame to base_link -->
-    <node if="$(arg openvslam)" pkg="occupancy_grid_utils" type="transform_odometry.py" name="transform_odometry" output="screen"
+    <node if="$(arg openvslam)" pkg="ros_utils" type="transform_odometry.py" name="transform_odometry" output="screen"
         args="--in-odom-topic /OpenVSLAM/odom \
               --from-frame zed_left_camera_optical_frame \
               --to-frame base_link \
